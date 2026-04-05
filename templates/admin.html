@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<h2>👑 Admin Panel</h2>
+
+<!-- 🔔 FILE REQUEST SECTION -->
+<h3>📂 File Requests</h3>
+
+<div class="file-container">
+    {% if files %}
+        {% for file in files %}
+        <div class="file-card">
+            <p><b>{{ file.filename }}</b></p>
+            <p>User ID: {{ file.user_id }}</p>
+
+            {% if file.requested and not file.approved %}
+                <p style="color: orange;">⏳ Pending Approval</p>
+                <a href="/approve/{{ file.id }}">
+                    <button class="admin-btn">✅ Approve</button>
+                </a>
+
+            {% elif file.approved %}
+                <p style="color: green;">Approved ✅</p>
+
+            {% else %}
+                <p style="color: gray;">No request</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No files available</p>
+    {% endif %}
+</div>
+
+<hr>
+
+<!-- 👥 USER MANAGEMENT SECTION -->
+<h3>👥 Users</h3>
+
+<div class="user-container">
+    {% for user in users %}
+    <div class="user-card">
+        <p><b>{{ user.username }}</b></p>
+        <p>Role: {{ user.role }}</p>
+
+        {% if user.role != 'admin' %}
+            <a href="/make_admin/{{ user.id }}">
+                <button class="admin-btn">Make Admin</button>
+            </a>
+        {% else %}
+            <p>Already Admin 👑</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

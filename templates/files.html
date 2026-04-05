@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Files</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- FLASH MESSAGE -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-message">
+        {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<script>
+setTimeout(() => {
+    const msg = document.querySelector('.flash-message');
+    if (msg) msg.style.display = 'none';
+}, 3000);
+</script>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🔐 Secure Cloud Storage</h2>
+    <div>
+        <a href="/dashboard">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/files">Files</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="toast">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<h2>Your Files</h2>
+
+<div class="file-container">
+    {% for file in files %}
+    <div class="file-card">
+        <p>{{ file.filename }}</p>
+        <p>Requested: {{ file.requested }} | Approved: {{ file.approved }}</p>
+        {% if not file.requested %}
+            <a href="/request/{{ file.id }}">
+                <button>🔐 Request Access</button>
+            </a>
+
+        {% elif file.requested and not file.approved %}
+            <p>⏳ Waiting for admin approval</p>
+
+        {% else %}
+            <a href="/download/{{ file.filename }}">
+                <button>⬇ Download</button>
+            </a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<br>
+<a href="/dashboard">⬅ Back</a>
+<a href="/dashboard">Back to Dashboard</a>
+
+<script>
+setTimeout(() => {
+    document.querySelectorAll('.toast').forEach(el => {
+        el.classList.add('hide');
+        setTimeout(() => el.remove(), 500);
+    });
+}, 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<p>Role: {{ session['role'] }}</p>
+<div class="navbar">
+    <h2>🔐 Secure Cloud Storage</h2>
+    <div>
+        <a href="/dashboard">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/files">Files</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="toast-container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="toast">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<div class="container">
+    <h2>Welcome 👋</h2>
+    <p>Manage your secure files</p>
+
+    <div class="dash-buttons">
+    <a href="/upload"><button>📤 Upload File</button></a>
+    <a href="/files"><button>📂 View Files</button></a>
+
+    {% if session['role'] == 'admin' %}
+        <a href="/admin"><button>👑 Admin Panel</button></a>
+    {% endif %}
+
+    <a href="/logout"><button style="background:red;">🚪 Logout</button></a>
+</div>
+</div>
+
+</body>
+</html>
+<script>
+setTimeout(() => {
+    document.querySelectorAll('.toast').forEach(el => {
+        el.classList.add('hide');
+        setTimeout(() => el.remove(), 500);
+    });
+}, 3000);
+</script>
