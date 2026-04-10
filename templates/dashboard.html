@@ -1,55 +1,108 @@
 <!DOCTYPE html>
-<p>Role: {{ session['role'] }}</p>
-<div class="navbar">
-    <h2>🔐 Secure Cloud Storage</h2>
-    <div>
-        <a href="/dashboard">Home</a>
-        <a href="/upload">Upload</a>
-        <a href="/files">Files</a>
-        <a href="/logout">Logout</a>
-    </div>
-</div>
 <html>
 <head>
     <title>Dashboard</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body class="bg-gray-900 text-white">
 
-<div class="toast-container">
+<!-- 🔝 NAVBAR -->
+<div class="flex justify-between items-center px-6 py-4 bg-gray-800 shadow-md">
+    <h2 class="text-xl font-bold">🔐 Secure Cloud Storage</h2>
+
+    <div class="space-x-6 text-sm">
+        <a href="/dashboard" class="hover:text-blue-400">Home</a>
+        <a href="/upload" class="hover:text-blue-400">Upload</a>
+        <a href="/files" class="hover:text-blue-400">Files</a>
+        <a href="/logout" class="hover:text-red-400">Logout</a>
+    </div>
+</div>
+
+<!-- 🔔 TOAST -->
+<div class="fixed top-5 right-5 space-y-2 z-50">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for msg in messages %}
-                <div class="toast">{{ msg }}</div>
+                <div class="toast bg-green-600 px-4 py-2 rounded shadow-lg">
+                    {{ msg }}
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 </div>
 
-<div class="container">
-    <h2>Welcome 👋</h2>
-    <p>Manage your secure files</p>
+<!-- 🏠 DASHBOARD CONTENT -->
+<div class="p-8">
 
-    <div class="dash-buttons">
-    <a href="/upload"><button>📤 Upload File</button></a>
-    <a href="/files"><button>📂 View Files</button></a>
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold">Welcome 👋</h1>
+        <p class="text-gray-400">Manage your secure files easily</p>
 
-    {% if session['role'] == 'admin' %}
-        <a href="/admin"><button>👑 Admin Panel</button></a>
-    {% endif %}
+        <!-- Role Badge -->
+        <span class="inline-block mt-2 px-3 py-1 text-sm rounded-full 
+            {% if session['role'] == 'admin' %}
+                bg-purple-600
+            {% else %}
+                bg-blue-600
+            {% endif %}
+        ">
+            Role: {{ session['role'] }}
+        </span>
+    </div>
 
-    <a href="/logout"><button style="background:red;">🚪 Logout</button></a>
+    <!-- 🔥 ACTION CARDS -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Upload -->
+        <a href="/upload" class="bg-blue-600 p-6 rounded-2xl hover:bg-blue-700 transition shadow-lg">
+            <div class="text-3xl mb-2">📤</div>
+            <h3 class="text-lg font-semibold">Upload File</h3>
+            <p class="text-sm text-gray-200">Securely upload your files</p>
+        </a>
+
+        <!-- Files -->
+        <a href="/files" class="bg-green-600 p-6 rounded-2xl hover:bg-green-700 transition shadow-lg">
+            <div class="text-3xl mb-2">📂</div>
+            <h3 class="text-lg font-semibold">My Files</h3>
+            <p class="text-sm text-gray-200">View & manage files</p>
+        </a>
+
+        <!-- Admin (only if admin) -->
+        {% if session['role'] == 'admin' %}
+        <a href="/admin" class="bg-purple-600 p-6 rounded-2xl hover:bg-purple-700 transition shadow-lg">
+            <div class="text-3xl mb-2">👑</div>
+            <h3 class="text-lg font-semibold">Admin Panel</h3>
+            <p class="text-sm text-gray-200">Manage users & approvals</p>
+        </a>
+        {% endif %}
+
+        <!-- Logout -->
+        <a href="/logout" class="bg-red-600 p-6 rounded-2xl hover:bg-red-700 transition shadow-lg">
+            <div class="text-3xl mb-2">🚪</div>
+            <h3 class="text-lg font-semibold">Logout</h3>
+            <p class="text-sm text-gray-200">Sign out safely</p>
+        </a>
+
+    </div>
+
 </div>
-</div>
 
-</body>
-</html>
+<!-- 🔔 TOAST AUTO HIDE -->
 <script>
 setTimeout(() => {
     document.querySelectorAll('.toast').forEach(el => {
-        el.classList.add('hide');
+        el.style.opacity = "0";
         setTimeout(() => el.remove(), 500);
     });
 }, 3000);
 </script>
+
+</body>
+</html>

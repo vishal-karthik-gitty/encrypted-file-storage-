@@ -2,62 +2,115 @@
 <html>
 <head>
     <title>Admin Panel</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body class="bg-gray-900 text-white">
 
-<h2>👑 Admin Panel</h2>
+<!-- 🔝 NAVBAR -->
+<div class="flex justify-between items-center px-6 py-4 bg-gray-800 shadow-md">
+    <h2 class="text-xl font-bold">🔐 Secure Cloud Storage</h2>
 
-<!-- 🔔 FILE REQUEST SECTION -->
-<h3>📂 File Requests</h3>
-
-<div class="file-container">
-    {% if files %}
-        {% for file in files %}
-        <div class="file-card">
-            <p><b>{{ file.filename }}</b></p>
-            <p>User ID: {{ file.user_id }}</p>
-
-            {% if file.requested and not file.approved %}
-                <p style="color: orange;">⏳ Pending Approval</p>
-                <a href="/approve/{{ file.id }}">
-                    <button class="admin-btn">✅ Approve</button>
-                </a>
-
-            {% elif file.approved %}
-                <p style="color: green;">Approved ✅</p>
-
-            {% else %}
-                <p style="color: gray;">No request</p>
-            {% endif %}
-        </div>
-        {% endfor %}
-    {% else %}
-        <p>No files available</p>
-    {% endif %}
+    <div class="space-x-6 text-sm">
+        <a href="/dashboard" class="hover:text-blue-400">Home</a>
+        <a href="/upload" class="hover:text-blue-400">Upload</a>
+        <a href="/files" class="hover:text-blue-400">Files</a>
+        <a href="/logout" class="hover:text-red-400">Logout</a>
+    </div>
 </div>
 
-<hr>
+<!-- 👑 HEADER -->
+<div class="p-6">
+    <h1 class="text-3xl font-bold mb-2">👑 Admin Panel</h1>
+    <p class="text-gray-400 mb-6">Manage file access and users</p>
 
-<!-- 👥 USER MANAGEMENT SECTION -->
-<h3>👥 Users</h3>
+    <!-- 📂 FILE REQUESTS -->
+    <h2 class="text-xl font-semibold mb-4">📂 File Requests</h2>
 
-<div class="user-container">
-    {% for user in users %}
-    <div class="user-card">
-        <p><b>{{ user.username }}</b></p>
-        <p>Role: {{ user.role }}</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
-        {% if user.role != 'admin' %}
-            <a href="/make_admin/{{ user.id }}">
-                <button class="admin-btn">Make Admin</button>
-            </a>
+        {% if files %}
+            {% for file in files %}
+            <div class="bg-gray-800 p-5 rounded-2xl shadow-lg">
+
+                <h3 class="font-semibold text-lg mb-2 break-words">
+                    {{ file.filename }}
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-2">
+                    User ID: {{ file.user_id }}
+                </p>
+
+                <!-- Status -->
+                <div class="mb-3">
+                    {% if file.requested and not file.approved %}
+                        <span class="bg-yellow-500 px-2 py-1 text-xs rounded">Pending</span>
+                    {% elif file.approved %}
+                        <span class="bg-green-600 px-2 py-1 text-xs rounded">Approved</span>
+                    {% else %}
+                        <span class="bg-gray-600 px-2 py-1 text-xs rounded">No Request</span>
+                    {% endif %}
+                </div>
+
+                <!-- Action -->
+                {% if file.requested and not file.approved %}
+                    <a href="/approve/{{ file.id }}">
+                        <button class="w-full bg-green-600 p-2 rounded hover:bg-green-700">
+                            ✅ Approve
+                        </button>
+                    </a>
+                {% endif %}
+
+            </div>
+            {% endfor %}
         {% else %}
-            <p>Already Admin 👑</p>
+            <p class="text-gray-400">No files available</p>
         {% endif %}
+
     </div>
-    {% endfor %}
+
+    <!-- 👥 USERS -->
+    <h2 class="text-xl font-semibold mb-4">👥 Users</h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for user in users %}
+        <div class="bg-gray-800 p-5 rounded-2xl shadow-lg">
+
+            <h3 class="font-semibold text-lg mb-2">
+                {{ user.username }}
+            </h3>
+
+            <!-- Role -->
+            <div class="mb-3">
+                {% if user.role == 'admin' %}
+                    <span class="bg-purple-600 px-2 py-1 text-xs rounded">Admin</span>
+                {% else %}
+                    <span class="bg-blue-600 px-2 py-1 text-xs rounded">User</span>
+                {% endif %}
+            </div>
+
+            <!-- Action -->
+            {% if user.role != 'admin' %}
+                <a href="/make_admin/{{ user.id }}">
+                    <button class="w-full bg-purple-600 p-2 rounded hover:bg-purple-700">
+                        Make Admin
+                    </button>
+                </a>
+            {% else %}
+                <p class="text-sm text-gray-400">Already Admin 👑</p>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
 </div>
 
 </body>

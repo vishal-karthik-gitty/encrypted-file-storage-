@@ -1,83 +1,109 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Your Files</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body class="bg-gray-900 text-white">
 
-<!-- FLASH MESSAGE -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="flash-message">
-        {{ messages[0] }}
-    </div>
-  {% endif %}
-{% endwith %}
+<!-- 🔝 NAVBAR -->
+<div class="flex justify-between items-center px-6 py-4 bg-gray-800 shadow-md">
+    <h2 class="text-xl font-bold">🔐 Secure Cloud Storage</h2>
 
-<script>
-setTimeout(() => {
-    const msg = document.querySelector('.flash-message');
-    if (msg) msg.style.display = 'none';
-}, 3000);
-</script>
-
-<!-- NAVBAR -->
-<div class="navbar">
-    <h2>🔐 Secure Cloud Storage</h2>
-    <div>
-        <a href="/dashboard">Home</a>
-        <a href="/upload">Upload</a>
-        <a href="/files">Files</a>
-        <a href="/logout">Logout</a>
+    <div class="space-x-6 text-sm">
+        <a href="/dashboard" class="hover:text-blue-400">Home</a>
+        <a href="/upload" class="hover:text-blue-400">Upload</a>
+        <a href="/files" class="text-blue-400 font-semibold">Files</a>
+        <a href="/logout" class="hover:text-red-400">Logout</a>
     </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast-container">
+<!-- 🔔 TOAST -->
+<div class="fixed top-5 right-5 space-y-2 z-50">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for msg in messages %}
-                <div class="toast">{{ msg }}</div>
+                <div class="toast bg-green-600 px-4 py-2 rounded shadow-lg">
+                    {{ msg }}
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 </div>
 
-<h2>Your Files</h2>
+<!-- 📂 TITLE -->
+<div class="p-6">
+    <h1 class="text-3xl font-bold mb-6">Your Files</h1>
 
-<div class="file-container">
-    {% for file in files %}
-    <div class="file-card">
-        <p>{{ file.filename }}</p>
-        <p>Requested: {{ file.requested }} | Approved: {{ file.approved }}</p>
-        {% if not file.requested %}
-            <a href="/request/{{ file.id }}">
-                <button>🔐 Request Access</button>
-            </a>
+    <!-- FILE GRID -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        {% elif file.requested and not file.approved %}
-            <p>⏳ Waiting for admin approval</p>
+        {% for file in files %}
+        <div class="bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-xl transition">
 
-        {% else %}
-            <a href="/download/{{ file.filename }}">
-                <button>⬇ Download</button>
-            </a>
-        {% endif %}
+            <!-- Filename -->
+            <h3 class="text-lg font-semibold mb-2 break-words">
+                {{ file.filename }}
+            </h3>
+
+            <!-- Status -->
+            <div class="text-sm mb-3">
+                {% if file.approved %}
+                    <span class="bg-green-600 px-2 py-1 rounded text-xs">Approved</span>
+                {% elif file.requested %}
+                    <span class="bg-yellow-500 px-2 py-1 rounded text-xs">Pending</span>
+                {% else %}
+                    <span class="bg-gray-600 px-2 py-1 rounded text-xs">Not Requested</span>
+                {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4">
+
+                {% if not file.requested %}
+                    <a href="/request/{{ file.id }}">
+                        <button class="w-full bg-blue-600 p-2 rounded hover:bg-blue-700">
+                            🔐 Request Access
+                        </button>
+                    </a>
+
+                {% elif file.requested and not file.approved %}
+                    <p class="text-yellow-400 text-sm">⏳ Waiting for approval</p>
+
+                {% else %}
+                    <a href="/download/{{ file.filename }}">
+                        <button class="w-full bg-green-600 p-2 rounded hover:bg-green-700">
+                            ⬇ Download
+                        </button>
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+        {% endfor %}
+
     </div>
-    {% endfor %}
+
+    <!-- Back -->
+    <a href="/dashboard"
+        class="inline-block mt-6 text-blue-400 hover:underline">
+        ← Back to Dashboard
+    </a>
+
 </div>
 
-<br>
-<a href="/dashboard">⬅ Back</a>
-<a href="/dashboard">Back to Dashboard</a>
-
+<!-- 🔔 TOAST AUTO HIDE -->
 <script>
 setTimeout(() => {
     document.querySelectorAll('.toast').forEach(el => {
-        el.classList.add('hide');
+        el.style.opacity = "0";
         setTimeout(() => el.remove(), 500);
     });
 }, 3000);
