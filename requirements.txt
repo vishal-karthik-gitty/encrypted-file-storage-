@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 boto3
 pycryptodome
 gunicorn
+python-dotenv

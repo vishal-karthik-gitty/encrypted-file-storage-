@@ -4,25 +4,30 @@ from encryption.aes_utils import encrypt_file, decrypt_file
 from encryption.rsa_utils import generate_keys, encrypt_key, decrypt_key
 import os
 import boto3
+from dotenv import load_dotenv
+load_dotenv()
+
+app = Flask(__name__)
 
 #  AWS CONFIG (works both LOCAL + CLOUD)
-AWS_ACCESS_KEY =""
-AWS_SECRET_KEY = ""
+AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY")
+AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 S3_BUCKET = "secure-file-storage-project1"
 
 s3 = boto3.client(
     's3',
-    aws_access_key_id="",
-    aws_secret_access_key="",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
     region_name='ap-south-1'
 )
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = "secret123"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
-#  Works in BOTH local + cloud
+
+
 UPLOAD_FOLDER = "/tmp/uploads"
 ENCRYPTED_FOLDER = "/tmp/encrypted_files"
 
@@ -241,4 +246,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=10000)  # nosec B104 - required for Docker container networking
