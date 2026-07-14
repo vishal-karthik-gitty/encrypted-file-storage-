@@ -3,8 +3,8 @@ import os
 
 s3 = boto3.client(
     's3',
-    aws_access_key_id="YOUR_ACCESS_KEY",
-    aws_secret_access_key="YOUR_SECRET_KEY",
+    aws_access_key_id="",
+    aws_secret_access_key="",
     region_name='ap-south-1'
 )
 

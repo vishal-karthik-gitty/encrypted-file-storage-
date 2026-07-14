@@ -7,7 +7,7 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100))
     password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(20), default="user")  # ✅ NEW
+    role = db.Column(db.String(20), default="user") 
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,4 +19,3 @@ class File(db.Model):
 
     approved = db.Column(db.Boolean, default=False)
     requested = db.Column(db.Boolean, default=False)
-

@@ -5,16 +5,16 @@ from encryption.rsa_utils import generate_keys, encrypt_key, decrypt_key
 import os
 import boto3
 
-# 🔥 AWS CONFIG (works both LOCAL + CLOUD)
-AWS_ACCESS_KEY ="YOUR_ACCESS_KEY"
-AWS_SECRET_KEY = "YOUR_SECRET_KEY"
+#  AWS CONFIG (works both LOCAL + CLOUD)
+AWS_ACCESS_KEY =""
+AWS_SECRET_KEY = ""
 
 S3_BUCKET = "secure-file-storage-project1"
 
 s3 = boto3.client(
     's3',
-    aws_access_key_id="AWS_ACCESS_KEY",
-    aws_secret_access_key="AWS_SECRET_KEY",
+    aws_access_key_id="",
+    aws_secret_access_key="",
     region_name='ap-south-1'
 )
 
@@ -22,7 +22,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret123"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
-# 🔥 Works in BOTH local + cloud
+#  Works in BOTH local + cloud
 UPLOAD_FOLDER = "/tmp/uploads"
 ENCRYPTED_FOLDER = "/tmp/encrypted_files"
 
@@ -35,7 +35,7 @@ with app.app_context():
     db.create_all()
 
 
-# 🔐 LOGIN
+#  LOGIN
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
@@ -55,7 +55,7 @@ def home():
     return render_template("login.html")
 
 
-# 📝 REGISTER
+#  REGISTER
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -79,7 +79,7 @@ def register():
     return render_template("register.html")
 
 
-# 🏠 DASHBOARD
+#  DASHBOARD
 @app.route("/dashboard")
 def dashboard():
     if 'user_id' not in session:
@@ -87,7 +87,7 @@ def dashboard():
     return render_template("dashboard.html")
 
 
-# 📤 UPLOAD
+#  UPLOAD
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     if 'user_id' not in session:
@@ -135,7 +135,7 @@ def upload():
     return render_template("upload.html")
 
 
-# 👑 ADMIN PANEL
+#  ADMIN PANEL
 @app.route("/admin")
 def admin():
     if session.get('role') != "admin":
@@ -148,7 +148,7 @@ def admin():
     )
 
 
-# 👑 MAKE ADMIN
+# MAKE ADMIN
 @app.route("/make_admin/<int:user_id>")
 def make_admin(user_id):
     if session.get('role') != "admin":
@@ -162,7 +162,7 @@ def make_admin(user_id):
     return redirect(url_for('admin'))
 
 
-# 🔐 REQUEST ACCESS
+#  REQUEST ACCESS
 @app.route("/request/<int:file_id>")
 def request_file(file_id):
     file = File.query.get(file_id)
@@ -175,7 +175,7 @@ def request_file(file_id):
     return redirect(url_for('files'))
 
 
-# ✅ APPROVE
+#  APPROVE
 @app.route("/approve/<int:file_id>")
 def approve(file_id):
     if session.get('role') != "admin":
@@ -192,7 +192,7 @@ def approve(file_id):
     return redirect(url_for('admin'))
 
 
-# 📂 FILES
+#  FILES
 @app.route("/files")
 def files():
     if 'user_id' not in session:
@@ -206,7 +206,7 @@ def files():
     return render_template("files.html", files=user_files)
 
 
-# ⬇ DOWNLOAD
+#  DOWNLOAD
 @app.route("/download/<filename>")
 def download(filename):
     if 'user_id' not in session:
@@ -233,7 +233,7 @@ def download(filename):
     return send_file(decrypted_path, as_attachment=True)
 
 
-# 🚪 LOGOUT
+#  LOGOUT
 @app.route("/logout")
 def logout():
     session.clear()
