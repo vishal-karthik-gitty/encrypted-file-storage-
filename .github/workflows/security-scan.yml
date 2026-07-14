@@ -1,0 +1,30 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+          pip install bandit pip-audit
+
+      - name: Run Bandit (static code security scan)
+        run: bandit -r . -x ./venv,./tests -f screen
+
+      - name: Run pip-audit (dependency vulnerability scan)
+        run: pip-audit -r requirements.txt
