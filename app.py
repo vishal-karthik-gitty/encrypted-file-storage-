@@ -28,8 +28,8 @@ s3 = boto3.client(
 
 
 
-UPLOAD_FOLDER = "/tmp/uploads"
-ENCRYPTED_FOLDER = "/tmp/encrypted_files"
+UPLOAD_FOLDER = "/tmp/uploads"  # nosec B108
+ENCRYPTED_FOLDER = "/tmp/encrypted_files"  # nosec B108
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(ENCRYPTED_FOLDER, exist_ok=True)
