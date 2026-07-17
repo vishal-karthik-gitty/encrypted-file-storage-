@@ -1,5 +1,5 @@
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+from Crypto.Cipher import AES  # nosec B413 - using pycryptodome (maintained fork), not deprecated pycrypto
+from Crypto.Random import get_random_bytes  # nosec B413 - pycryptodome
 import os
 
 def encrypt_file(input_file, output_file):

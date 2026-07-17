@@ -1,5 +1,5 @@
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA  # nosec B413 - using pycryptodome (maintained fork), not deprecated pycrypto
+from Crypto.Cipher import PKCS1_OAEP  # nosec B413 - pycryptodome
 
 # Generate RSA keys
 def generate_keys():

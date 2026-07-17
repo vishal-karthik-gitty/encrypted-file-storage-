@@ -225,7 +225,7 @@ def download(filename):
     encrypted_path = os.path.join(ENCRYPTED_FOLDER, filename)
     decrypted_path = os.path.join(UPLOAD_FOLDER, "dec_" + filename)
 
-    from Crypto.PublicKey import RSA
+    from Crypto.PublicKey import RSA  # nosec B413 - pycryptodome, not deprecated pycrypto
 
     # Download from S3
     s3.download_file(S3_BUCKET, filename, encrypted_path)
