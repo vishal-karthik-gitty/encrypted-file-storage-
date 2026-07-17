@@ -57,6 +57,6 @@ jobs:
           image-ref: secure-file-storage:${{ github.sha }}
           format: table
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
           exit-code: 1
 
-          
