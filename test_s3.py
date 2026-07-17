@@ -13,6 +13,6 @@ s3 = boto3.client(
     region_name='ap-south-1'
 )
 
-bucket_name = "secure-file-storage-project1"
+bucket_name = "S3_BUCKET = "secured-file-storage""
 
 s3.upload_file('app.py', bucket_name, 'test_app.py')

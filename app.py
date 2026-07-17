@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_file,
 from models.db import db, User, File
 from encryption.aes_utils import encrypt_file, decrypt_file
 from encryption.rsa_utils import generate_keys, encrypt_key, decrypt_key
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import boto3
 from dotenv import load_dotenv
@@ -16,7 +17,7 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
-S3_BUCKET = "secure-file-storage-project1"
+S3_BUCKET = "secured-file-storage"
 
 s3 = boto3.client(
     's3',
@@ -47,9 +48,9 @@ def home():
         username = request.form['username']
         password = request.form['password']
 
-        user = User.query.filter_by(username=username, password=password).first()
+        user = User.query.filter_by(username=username).first()
 
-        if user:
+        if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['role'] = user.role
             return redirect(url_for('dashboard'))
@@ -74,7 +75,8 @@ def register():
 
         role = "admin" if not User.query.filter_by(role="admin").first() else "user"
 
-        new_user = User(username=username, email=email, password=password, role=role)
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, email=email, password=hashed_password, role=role)
         db.session.add(new_user)
         db.session.commit()
 
