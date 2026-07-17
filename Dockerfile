@@ -15,5 +15,7 @@ COPY . .
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 EXPOSE 10000
 RUN useradd --create-home appuser
+RUN chown -R appuser:appuser /app
+RUN chmod -R u+rwX /app
 USER appuser
 CMD ["python", "app.py"]
