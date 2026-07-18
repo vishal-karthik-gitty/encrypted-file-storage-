@@ -1,0 +1,25 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/encrypted-file-storage-
+            git pull origin main
+            docker rm -f secure-app || true
+            docker build -t secure-file-storage .
+            docker run -d -p 10000:10000 --env-file .env --name secure-app secure-file-storage
+            docker ps
